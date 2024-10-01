@@ -174,6 +174,7 @@ class Commands:
 
         debug_info = (
             f"**Bot Debug Info**:\n"
+            f"Uptime: 1.0.0\n"
             f"Uptime: {uptime_str}\n"
             f"Memory Usage: {memory_usage:.2f} MB\n"
         )
