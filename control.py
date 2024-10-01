@@ -1,6 +1,4 @@
-from discord import Intents, Client, Message, utils, Member
-import discord
-from datetime import datetime
+from discord import Client, Message
 
 from commands import Commands
 

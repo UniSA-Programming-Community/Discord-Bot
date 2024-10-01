@@ -1,5 +1,4 @@
-from discord import Intents, Client, Message, utils, Member
-import discord
+from discord import Client, Message, utils
 from datetime import datetime
 from json import dump
 from funcs import Funcs

@@ -1,13 +1,12 @@
-from discord import Intents, Client, Message, utils, Member
-import discord
-from datetime import datetime
+from discord import Intents, Client, Message
+
 
 from private import token
 from funcs import Funcs
 from commands import Commands
 from control import Control
 
-# permision/intent setup
+# permission/intent setup
 intents: Intents = Intents.default()
 intents.message_content = True  # NQQA
 intents.members = True  # NQQA
