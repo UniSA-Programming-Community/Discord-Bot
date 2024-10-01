@@ -183,10 +183,7 @@ class Commands:
 
             CPU_response = f"**Current CPU Speed:** {current_speed:.2f} MHz\n"
         else:
-           CPU_response = "Could not retrieve CPU speed information."
-
-
-
+            CPU_response = "Could not retrieve CPU speed information."
 
         debug_info = (
             f"**Bot Debug Info**:\n"
@@ -195,7 +192,6 @@ class Commands:
             f"Uptime: {uptime_str}\n"
             f"Memory Usage: {memory_usage:.2f} MB\n"
             f"{CPU_response}"
-
 
         )
 
