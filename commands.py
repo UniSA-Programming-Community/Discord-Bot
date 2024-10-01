@@ -180,6 +180,7 @@ class Commands:
             f"Latency: {latency}\n"
             f"Uptime: {uptime_str}\n"
             f"Memory Usage: {memory_usage:.2f} MB\n"
+
         )
 
         return debug_info
