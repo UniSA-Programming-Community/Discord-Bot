@@ -1,7 +1,6 @@
 from discord import Intents, Client, Message
 
 
-from private import token
 from funcs import Funcs
 from commands import Commands
 from control import Control
@@ -56,6 +55,8 @@ def give_instances():
 
 
 def run():
+    with open('token.txt', 'r') as file:
+        token = file.read().strip()
     client.run(token=token)
     give_instances()
 
