@@ -174,12 +174,30 @@ class Commands:
         uptime = current_time - self.__start_time
         uptime_str = str(timedelta(seconds=int(uptime.total_seconds())))
         latency = round(self.__client.latency * 1000)
+
+        cpu_freq = psutil.cpu_freq()
+        if cpu_freq:
+            current_speed = cpu_freq.current  # Current CPU speed in MHz
+            min_speed = cpu_freq.min  # Minimum CPU speed in MHz
+            max_speed = cpu_freq.max  # Maximum CPU speed in MHz
+
+            CPU_response = (f"**Current CPU Speed:** {current_speed:.2f} MHz\n"
+                    f"**Minimum CPU Speed:** {min_speed:.2f} MHz\n"
+                    f"**Maximum CPU Speed:** {max_speed:.2f} MHz")
+        else:
+           CPU_response = "Could not retrieve CPU speed information."
+
+
+
+
         debug_info = (
             f"**Bot Debug Info**:\n"
             f"Version: {BOT_VERSION}\n"
             f"Latency: {latency}\n"
             f"Uptime: {uptime_str}\n"
             f"Memory Usage: {memory_usage:.2f} MB\n"
+            f"{CPU_response}"
+
 
         )
 
