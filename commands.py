@@ -27,7 +27,8 @@ class Commands:
 
         }
         otherFuncions = [
-            'When a user leaves a message is sent in #activity-log containing the users name and current member count.','Automatically does not past events']
+            'When a user leaves a message is sent in #activity-log containing the users name and current member count.',
+            'Automatically does not past events']
 
         txt = 'Commands:\n'
         for key in commands:
@@ -47,13 +48,13 @@ class Commands:
 
             if not await self.__funcs.check_for_role(target_member, 'member'):
                 await target_member.add_roles(role)
-                return f'Role has been succsesfully added to {target_member.name}.'
+                return f'Role has been successfully added to {target_member.name}.'
             else:
                 return f'{target_member.name} already has member role.'
         else:
             return 'You can not apply member role to users as you are not a executive'
 
-    # messages every member - used to remined people of renewal
+    # messages every member - used to remained people of renewal
 
     async def renew(self, message: Message):
         if not await self.__funcs.check_for_role(message.author, 'exec'):
@@ -61,15 +62,18 @@ class Commands:
         if datetime.now().month != 1:
             return 'It is not January, you dont wanna message everyone yet'
         return 'remove this part to actually be able to send it'
+
         allUsers = self.__client.get_all_members()
+
         for user in allUsers:
             print(user.name)
             if user != self.__client.user and await self.__funcs.check_for_role(user, 'member') == True:
                 channel = await user.create_dm()
-                await channel.send('Hi,\nThis message has been automatically sent to all members to remined you that your membership to the UniSA Programming community automatically expires on the 1st of January. To continue to partipate in our events please renew it.\nThanks!\nhttps://usasa.sa.edu.au/clubs/join/7520/')
+                await channel.send(
+                    'Hi,\nThis message has been automatically sent to all members to remained you that your membership to the UniSA Programming community automatically expires on the 1st of January. To continue to partipate in our events please renew it.\nThanks!\nhttps://usasa.sa.edu.au/clubs/join/7520/')
         return 'All members have been reminded of there expiring membership '
 
-    # messages people who have been in the server for more then a week and dont have member or other relivent role to sign up
+    # messages people who have been in the server for more than a week and don't have member or other relent role to sign up
 
     async def msg_non_members(self, message: Message):
         if not await self.__funcs.check_for_role(message.author, 'exec'):
@@ -96,9 +100,9 @@ class Commands:
         #     if isinstance(user, Member):
         #         try:
         #             channel = await user.create_dm()
-        #             await channel.send('Hi,\nyou have been in the UniSA Open Source Community discord for more then a week, and still have not signed up.\nIt only takes a minute to sign up, is free and you dont need to be a UniSA student to do it. Signing up is the best way to support our club and allow us to host as many future events as possible.\nhttps://usasa.sa.edu.au/clubs/join/7520/')
+        #             await channel.send('Hi,\nYou have been in the UniSA Open Source Community discord for more then a week, and still have not signed up.\nIt only takes a minute to sign up, is free and you don't need to be a UniSA student to do it. Signing up is the best way to support our club and allow us to host as many future events as possible.\nhttps://usasa.sa.edu.au/clubs/join/7520/')
         #         except discord.errors.HTTPException:
-        #             print(f'{user.name} could not be messaged')
+        #             print(f"{user.name} could not be messaged")
 
         return f'{[x.name for x in nonMembers]} have all been direct messaged. - not actually code is commented out'
 
@@ -136,11 +140,11 @@ class Commands:
 
         txt = ''
         for item in eventOrder:
-            if datetime.strptime(unorderedEvents[item],'%H:%M %d/%m/%y') > datetime.now():
+            if datetime.strptime(unorderedEvents[item], '%H:%M %d/%m/%y') > datetime.now():
                 txt += f'{item} - {unorderedEvents[item]}\n'
         return txt
-    
-    async def delete_event(self,message:Message):
+
+    async def delete_event(self, message: Message):
         if not self.__funcs.check_for_role(message.author, 'exec'):
             return 'you can not delete a event as you are not an exec'
         text = message.content.split()
@@ -154,7 +158,10 @@ class Commands:
             return 'Event deleted'
         except KeyError:
             return 'Event does not exist'
-    
+
+    async def ping(self):
+        latency = round(self.__client.latency * 1000)
+        return f'Pong! {latency}ms'
 
     def get_inConvo(self):
         return self.__inConvo

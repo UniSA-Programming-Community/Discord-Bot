@@ -29,7 +29,9 @@ class Funcs:
         return int(UID)
 
     def sort_events(self, unorderedDict):
+
         return sorted(unorderedDict, key=lambda item: datetime.strptime(unorderedDict[item], '%H:%M %d/%m/%y'))
+
         orderedDict = {}
         minDate = -1
         minKey = -1
@@ -83,6 +85,7 @@ class Funcs:
             unorderedEvents = {}
 
         return unorderedEvents
+
 
     def save_evet(self, name: str, time: datetime):
         unorderedEvents = self.load_json()

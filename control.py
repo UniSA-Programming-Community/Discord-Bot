@@ -16,14 +16,15 @@ class Control:
             return
 
         response: str = await self.get_response(message)
-        if response != False:
+        if response:
             await message.channel.send(response)
 
-    # finds the appropraite function to call based on the message content
+    # finds the appropriate function to call based on the message content
     async def get_response(self, message: Message):
         message_content = message.content.lower()
-        if self.__commands.inConvo == True and message.author.id == self.__commands.currentUserID:
-            return await self.__commands.currentFunc(message)
+        if self.__commands.inConvo:
+            if message.author.id == self.__commands.currentUserID:
+                return await self.__commands.currentFunc(message)
 
         elif message_content[0] != '!':
             return False
@@ -41,3 +42,5 @@ class Control:
             return await self.__commands.display_events()
         elif message_content.startswith('!del event'):
             return await self.__commands.delete_event(message)
+        elif message_content.startswith('!ping'):
+            return await self.__commands.ping()
