@@ -173,10 +173,11 @@ class Commands:
         current_time = datetime.now()
         uptime = current_time - self.__start_time
         uptime_str = str(timedelta(seconds=int(uptime.total_seconds())))
-
+        latency = round(self.__client.latency * 1000)
         debug_info = (
             f"**Bot Debug Info**:\n"
-            f"Uptime: {BOT_VERSION}\n"
+            f"Version: {BOT_VERSION}\n"
+            f"Latency: {latency}\n"
             f"Uptime: {uptime_str}\n"
             f"Memory Usage: {memory_usage:.2f} MB\n"
         )
