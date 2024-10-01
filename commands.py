@@ -181,9 +181,7 @@ class Commands:
             min_speed = cpu_freq.min  # Minimum CPU speed in MHz
             max_speed = cpu_freq.max  # Maximum CPU speed in MHz
 
-            CPU_response = (f"**Current CPU Speed:** {current_speed:.2f} MHz\n"
-                    f"**Minimum CPU Speed:** {min_speed:.2f} MHz\n"
-                    f"**Maximum CPU Speed:** {max_speed:.2f} MHz")
+            CPU_response = f"**Current CPU Speed:** {current_speed:.2f} MHz\n"
         else:
            CPU_response = "Could not retrieve CPU speed information."
 
