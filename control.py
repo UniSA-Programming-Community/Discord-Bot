@@ -6,6 +6,7 @@ from commands import Commands
 class Control:
     def __init__(self, client: Client, commands: Commands):
         self.__client = client
+
         self.__commands = commands
 
     async def send_message(self, message: Message) -> None:
@@ -44,3 +45,5 @@ class Control:
             return await self.__commands.delete_event(message)
         elif message_content.startswith('!ping'):
             return await self.__commands.ping()
+        elif message_content.startswith('!debug'):
+            return await self.__commands.debug()

@@ -1,11 +1,13 @@
+import psutil
 from discord import Client, Message, utils
-from datetime import datetime
+from datetime import datetime, timedelta
 from json import dump
 from funcs import Funcs
 
 
 class Commands:
     def __init__(self, client: Client, funcs: Funcs):
+        self.__start_time = datetime.now()
         self.__client = client
         self.__funcs = funcs
         self.__currentUserID = -1
@@ -23,7 +25,8 @@ class Commands:
             '!set event': 'Allows you to create an event with a time.',
             '!see events': 'Displays all upcoming events.',
             '!del event *event name*': 'Deletes the event',
-            '!ping': 'pings the bot to test for latency'
+            '!ping': 'pings the bot to test for latency',
+            '!debug': 'gets debugging information'
 
         }
         otherFuncions = [
@@ -162,6 +165,21 @@ class Commands:
     async def ping(self):
         latency = round(self.__client.latency * 1000)
         return f'Pong! {latency}ms'
+
+    async def debug(self):
+        memory_usage = psutil.Process().memory_info().rss / 1024 / 1024  # Memory in MB
+        current_time = datetime.now()
+        uptime = current_time - self.__start_time
+        uptime_str = str(timedelta(seconds=int(uptime.total_seconds())))
+
+        debug_info = (
+            f"**Bot Debug Info**:\n"
+            f"Uptime: {uptime_str}\n"
+            f"Memory Usage: {memory_usage:.2f} MB\n"
+        )
+
+
+        return debug_info
 
     def get_inConvo(self):
         return self.__inConvo
