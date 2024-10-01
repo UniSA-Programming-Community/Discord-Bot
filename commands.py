@@ -17,16 +17,17 @@ class Commands:
     async def help(self):
 
         commands = {
-            '!member': 'Makes the mentioned person a member. exec role is neeeded to use this command',
+            '!member': 'Makes the mentioned person a member. exec role is needed to use this command',
             '!spam': 'Messages all members reminded them to renew membership. used in january. exec role is needed to use this command.',
             '!msgnonmembers': 'Messages all people in the discord who have not yet signed up (excluding industry, adelaide CSC execs) and have been in the discord for more then a week. exec role is needed to use this command.',
             '!set event': 'Allows you to create an event with a time.',
             '!see events': 'Displays all upcoming events.',
             '!del event *event name*': 'Deletes the event',
+            '!ping': 'pings the bot to test for latency'
 
         }
         otherFuncions = [
-            'When a user leaves a message is sent in #activity-log containg the users name and current member count.','Automatically does not past events']
+            'When a user leaves a message is sent in #activity-log containing the users name and current member count.','Automatically does not past events']
 
         txt = 'Commands:\n'
         for key in commands:
@@ -39,12 +40,12 @@ class Commands:
 
     # adds role to mentioned member
     async def add_role(self, message: Message, roleName='member'):
-        if await self.__funcs.check_for_role(message.author, 'exec') == True:
+        if await self.__funcs.check_for_role(message.author, 'exec'):
             role = utils.get(message.guild.roles, name=roleName)
             UID = self.__funcs.strip_UID(str(message.content))
             target_member = utils.get(self.__client.get_all_members(), id=UID)
 
-            if await self.__funcs.check_for_role(target_member, 'member') == False:
+            if not await self.__funcs.check_for_role(target_member, 'member'):
                 await target_member.add_roles(role)
                 return f'Role has been succsesfully added to {target_member.name}.'
             else:
@@ -55,7 +56,7 @@ class Commands:
     # messages every member - used to remined people of renewal
 
     async def renew(self, message: Message):
-        if await self.__funcs.check_for_role(message.author, 'exec') == False:
+        if not await self.__funcs.check_for_role(message.author, 'exec'):
             return 'You can not use this command as you are not an executive.'
         if datetime.now().month != 1:
             return 'It is not January, you dont wanna message everyone yet'
@@ -71,7 +72,7 @@ class Commands:
     # messages people who have been in the server for more then a week and dont have member or other relivent role to sign up
 
     async def msg_non_members(self, message: Message):
-        if await self.__funcs.check_for_role(message.author, 'exec') == False:
+        if not await self.__funcs.check_for_role(message.author, 'exec'):
             return 'You can not use this command as you are not an executive.'
         allUsers = self.__client.get_all_members()
 
@@ -85,9 +86,9 @@ class Commands:
         for user in allUsersList:
             flag = False
             for item in ignoredRoles:
-                if await self.__funcs.check_for_role(user, item) == True:
+                if await self.__funcs.check_for_role(user, item):
                     flag = True
-            if flag == False:
+            if not flag:
                 if (datetime.now() - (user.joined_at.replace(tzinfo=None))).days >= 7:
                     nonMembers.append(user)
 
@@ -103,7 +104,7 @@ class Commands:
 
     async def set_event(self, message: Message):
         # datetime_object = datetime.strptime(datetime_str, '%H:%M %d/%m/%y')
-        if await self.__funcs.check_for_role(message.author, 'exec') == False:
+        if not await self.__funcs.check_for_role(message.author, 'exec'):
             return 'you can not set an event as you are not a exec.'
         if message.content.startswith('!set event'):
             self.__inConvo = True
@@ -140,7 +141,7 @@ class Commands:
         return txt
     
     async def delete_event(self,message:Message):
-        if self.__funcs.check_for_role(message.author,'exec') == False:
+        if not self.__funcs.check_for_role(message.author, 'exec'):
             return 'you can not delete a event as you are not an exec'
         text = message.content.split()
         text = ' '.join(text[2::])
