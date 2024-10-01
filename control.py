@@ -23,27 +23,30 @@ class Control:
     # finds the appropriate function to call based on the message content
     async def get_response(self, message: Message):
         message_content = message.content.lower()
-        if self.__commands.inConvo:
-            if message.author.id == self.__commands.currentUserID:
-                return await self.__commands.currentFunc(message)
 
-        elif message_content[0] != '!':
+        if self.__commands.inConvo and message.author.id == self.__commands.currentUserID:
+            return await self.__commands.currentFunc(message)
+
+        if not message_content.startswith('!'):
             return False
-        elif message_content.startswith('!member'):
-            return await self.__commands.add_role(message)
-        elif message_content.startswith('!spam'):
-            return await self.__commands.renew(message)
-        elif message_content.startswith('!msgnonmembers'):
-            return await self.__commands.msg_non_members(message)
-        elif message_content.startswith('!help'):
-            return await self.__commands.help()
-        elif message_content.startswith('!set event'):
-            return await self.__commands.set_event(message)
-        elif message_content.startswith('!see events'):
-            return await self.__commands.display_events()
-        elif message_content.startswith('!del event'):
-            return await self.__commands.delete_event(message)
-        elif message_content.startswith('!ping'):
-            return await self.__commands.ping()
-        elif message_content.startswith('!debug'):
-            return await self.__commands.debug()
+
+        command_mapping = {
+            '!member': self.__commands.add_role,
+            '!spam': self.__commands.renew,
+            '!msgnonmembers': self.__commands.msg_non_members,
+            '!help': self.__commands.help,
+            '!set event': self.__commands.set_event,
+            '!see events': self.__commands.display_events,
+            '!del event': self.__commands.delete_event,
+            '!ping': self.__commands.ping,
+            '!debug': self.__commands.debug
+        }
+
+        command = message_content.split()[0]
+        command_func = command_mapping.get(command)
+
+        if command_func:
+            return await command_func(message)
+
+        return False
+

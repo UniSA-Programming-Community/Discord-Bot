@@ -2,6 +2,8 @@ import psutil
 from discord import Client, Message, utils
 from datetime import datetime, timedelta
 from json import dump
+
+from const import BOT_VERSION
 from funcs import Funcs
 
 
@@ -174,11 +176,10 @@ class Commands:
 
         debug_info = (
             f"**Bot Debug Info**:\n"
-            f"Uptime: 1.0.0\n"
+            f"Uptime: {BOT_VERSION}\n"
             f"Uptime: {uptime_str}\n"
             f"Memory Usage: {memory_usage:.2f} MB\n"
         )
-
 
         return debug_info
 
