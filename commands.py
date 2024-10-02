@@ -181,14 +181,14 @@ class Commands:
             min_speed = cpu_freq.min  # Minimum CPU speed in MHz
             max_speed = cpu_freq.max  # Maximum CPU speed in MHz
 
-            CPU_response = f"**Current CPU Speed:** {current_speed:.2f} MHz\n"
+            CPU_response = f"Current CPU Speed: {current_speed:.2f} MHz\n"
         else:
             CPU_response = "Could not retrieve CPU speed information."
 
         debug_info = (
             f"**Bot Debug Info**:\n"
             f"Version: {BOT_VERSION}\n"
-            f"Latency: {latency}\n"
+            f"Latency: {latency}ms\n"
             f"Uptime: {uptime_str}\n"
             f"Memory Usage: {memory_usage:.2f} MB\n"
             f"{CPU_response}"
