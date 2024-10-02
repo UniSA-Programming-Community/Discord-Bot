@@ -8,7 +8,6 @@ class Funcs:
         self.__client = client
 
     # check for specific role
-
     async def check_for_role(self, author, roleName):
         author_roles = author.roles
         flag = False

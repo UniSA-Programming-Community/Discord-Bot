@@ -177,10 +177,7 @@ class Commands:
 
         cpu_freq = psutil.cpu_freq()
         if cpu_freq:
-            current_speed = cpu_freq.current  # Current CPU speed in MHz
-            min_speed = cpu_freq.min  # Minimum CPU speed in MHz
-            max_speed = cpu_freq.max  # Maximum CPU speed in MHz
-
+            current_speed = cpu_freq.current
             CPU_response = f"Current CPU Speed: {current_speed:.2f} MHz\n"
         else:
             CPU_response = "Could not retrieve CPU speed information."
