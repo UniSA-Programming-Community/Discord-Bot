@@ -7,7 +7,6 @@ from json import dump
 
 from const import BOT_VERSION
 from funcs import Funcs
-from main import client
 
 
 class Commands:

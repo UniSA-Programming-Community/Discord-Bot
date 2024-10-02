@@ -1,8 +1,7 @@
 from discord import Intents, Client, Message
 
-
-from funcs import Funcs
 from commands import Commands
+from funcs import Funcs
 from control import Control
 
 # permission/intent setup
