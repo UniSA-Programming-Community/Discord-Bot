@@ -1,3 +1,5 @@
+from sys import platform
+
 import psutil
 from discord import Client, Message, utils
 from datetime import datetime, timedelta
@@ -5,6 +7,7 @@ from json import dump
 
 from const import BOT_VERSION
 from funcs import Funcs
+from main import client
 
 
 class Commands:
@@ -174,25 +177,37 @@ class Commands:
         uptime = current_time - self.__start_time
         uptime_str = str(timedelta(seconds=int(uptime.total_seconds())))
         latency = round(self.__client.latency * 1000)
+        cpu_usage = psutil.cpu_percent(interval=1)
+        thread_count = psutil.Process().num_threads()
+        net_io = psutil.net_io_counters()
+        bytes_sent = net_io.bytes_sent / 1024 / 1024  # MB
+        bytes_recv = net_io.bytes_recv / 1024 / 1024  # MB
+        guild_count = len(self.__client.guilds)
+        user_count = len(self.__client.users)
+        python_version = platform.python_version()
 
         cpu_freq = psutil.cpu_freq()
-        if cpu_freq:
-            current_speed = cpu_freq.current  # Current CPU speed in MHz
-            min_speed = cpu_freq.min  # Minimum CPU speed in MHz
-            max_speed = cpu_freq.max  # Maximum CPU speed in MHz
 
-            CPU_response = f"**Current CPU Speed:** {current_speed:.2f} MHz\n"
+        if cpu_freq:
+            current_speed = cpu_freq.current
+            CPU_response = f"Current CPU Speed: {current_speed:.2f} MHz\n"
         else:
             CPU_response = "Could not retrieve CPU speed information."
 
         debug_info = (
             f"**Bot Debug Info**:\n"
             f"Version: {BOT_VERSION}\n"
-            f"Latency: {latency}\n"
+            f"Latency: {latency} ms\n"
             f"Uptime: {uptime_str}\n"
             f"Memory Usage: {memory_usage:.2f} MB\n"
+            f"CPU Usage: {cpu_usage}%\n"
+            f"Thread Count: {thread_count}\n"
+            f"Bytes Sent: {bytes_sent:.2f} MB\n"
+            f"Bytes Received: {bytes_recv:.2f} MB\n"
+            f"Guild Count: {guild_count}\n"
+            f"User Count: {user_count}\n"
+            f"Python Version: {python_version}\n"
             f"{CPU_response}"
-
         )
 
         return debug_info
