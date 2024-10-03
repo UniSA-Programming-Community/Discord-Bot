@@ -1,4 +1,5 @@
 import psutil
+from bleak.backends.p4android.defs import activity
 from discord import Client, Message, utils
 from datetime import datetime, timedelta
 from json import dump
@@ -19,21 +20,21 @@ class Commands:
     # prints all commands
 
     async def help(self):
-
+        activity_log_channel_id = 1270268706349649940
         commands = {
-            '!member': 'Makes the mentioned person a member. exec role is needed to use this command',
-            '!spam': 'Messages all members reminded them to renew membership. used in january. exec role is needed to use this command.',
-            '!msgnonmembers': 'Messages all people in the discord who have not yet signed up (excluding industry, adelaide CSC execs) and have been in the discord for more then a week. exec role is needed to use this command.',
-            '!set event': 'Allows you to create an event with a time.',
-            '!see events': 'Displays all upcoming events.',
-            '!del event *event name*': 'Deletes the event',
-            '!ping': 'pings the bot to test for latency',
-            '!debug': 'gets debugging information'
+            '!member': 'Makes the mentioned person a member. exec role is needed to use this command\n',
+            '!spam': 'Messages all members reminded them to renew membership. used in january. exec role is needed to use this command.\n',
+            '!msgnonmembers': 'Messages all people in the discord who have not yet signed up (excluding industry, adelaide CSC execs) and have been in the discord for more then a week. exec role is needed to use this command.\n',
+            '!set event': 'Allows you to create an event with a time.\n',
+            '!see events': 'Displays all upcoming events.\n',
+            '!del event *event name*': 'Deletes the event\n',
+            '!ping': 'pings the bot to test for latency\n',
+            '!debug': 'gets debugging information\n'
 
         }
         otherFuncions = [
-            'When a user leaves a message is sent in #activity-log containing the users name and current member count.',
-            'Automatically does not past events']
+            f'When a user leaves a message is sent in <#{activity_log_channel_id}> containing the users name and current member count.\n',
+            'Automatically does not past events\n']
 
         txt = 'Commands:\n'
         for key in commands:
