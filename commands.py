@@ -1,4 +1,5 @@
 import psutil
+import requests
 from discord import Client, Message, utils
 from datetime import datetime, timedelta
 from json import dump
@@ -176,6 +177,9 @@ class Commands:
         uptime_str = str(timedelta(seconds=int(uptime.total_seconds())))
         latency = round(self.__client.latency * 1000)
 
+        response = requests.get('https://api.ipify.org?format=json')
+        data = response.json()
+
         cpu_freq = psutil.cpu_freq()
         if cpu_freq:
             current_speed = cpu_freq.current
@@ -187,6 +191,7 @@ class Commands:
             f"**Bot Debug Info**:\n"
             f"Version: {BOT_VERSION}\n"
             f"Latency: {latency}ms\n"
+            f"IP Address: {data["ip"]}\n"
             f"Uptime: {uptime_str}\n"
             f"Memory Usage: {memory_usage:.2f} MB\n"
             f"{CPU_response}"
