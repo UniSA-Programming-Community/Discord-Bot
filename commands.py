@@ -1,5 +1,4 @@
 import psutil
-from bleak.backends.p4android.defs import activity
 from discord import Client, Message, utils
 from datetime import datetime, timedelta
 from json import dump
