@@ -1,3 +1,6 @@
+# Main Entry Script for the discord bot
+
+
 from discord import Intents, Client, Message
 
 from commands import Commands

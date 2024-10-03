@@ -18,7 +18,7 @@ class Funcs:
 
     # strips all text from userID+
 
-    def strip_UID(self, text: str):
+    async def strip_UID(self, text: str):
         textToRemove = ['!member ', '<@', '>']
         UID = text
 
@@ -27,7 +27,7 @@ class Funcs:
 
         return int(UID)
 
-    def sort_events(self, unorderedDict):
+    async def sort_events(self, unorderedDict):
 
         return sorted(unorderedDict, key=lambda item: datetime.strptime(unorderedDict[item], '%H:%M %d/%m/%y'))
 
@@ -72,7 +72,7 @@ class Funcs:
     #     f.write(f'Events = {orderedEvents}')
     #     f.close()
 
-    def load_json(self):
+    async def load_json(self):
         try:
             with open("events.json", 'r') as f:
                 unorderedEvents = json.load(f)
@@ -85,8 +85,7 @@ class Funcs:
 
         return unorderedEvents
 
-
-    def save_evet(self, name: str, time: datetime):
+    async def save_evet(self, name: str, time: datetime):
         unorderedEvents = self.load_json()
         print(f'this is the result from json load {unorderedEvents}')
         print(f'the file type loaded is {type(unorderedEvents)}')

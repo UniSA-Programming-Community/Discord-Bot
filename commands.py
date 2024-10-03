@@ -72,10 +72,11 @@ class Commands:
 
         for user in allUsers:
             print(user.name)
-            if user != self.__client.user and await self.__funcs.check_for_role(user, 'member') == True:
-                channel = await user.create_dm()
-                await channel.send(
-                    'Hi,\nThis message has been automatically sent to all members to remained you that your membership to the UniSA Programming community automatically expires on the 1st of January. To continue to partipate in our events please renew it.\nThanks!\nhttps://usasa.sa.edu.au/clubs/join/7520/')
+            if user != self.__client.user:
+                if await self.__funcs.check_for_role(user, 'member'):
+                    channel = await user.create_dm()
+                    await channel.send(
+                        'Hi,\nThis message has been automatically sent to all members to remained you that your membership to the UniSA Programming community automatically expires on the 1st of January. To continue to partipate in our events please renew it.\nThanks!\nhttps://usasa.sa.edu.au/clubs/join/7520/')
         return 'All members have been reminded of there expiring membership '
 
     # messages people who have been in the server for more than a week and don't have member or other relent role to sign up
@@ -129,11 +130,11 @@ class Commands:
                     '%H:%M %d/%m/%y')
                 self.__step = 2
                 return f'Time is set at {self.__eventInMemoryTime}. Please enter the name of the event.'
-            except:
-                return f'Time was not entered correctly, please enter to the format h:m dd/m/yy.'
+            except Exception as ex:
+                return f'Time was not entered correctly, please enter to the format h:m dd/m/yy. \n {ex}'
         if self.__step == 2:
             self.__eventInMemoryName = message.content
-            self.__funcs.save_evet(
+            await self.__funcs.save_evet(
                 self.__eventInMemoryName, self.__eventInMemoryTimeStr)
             self.__inConvo = False
 
