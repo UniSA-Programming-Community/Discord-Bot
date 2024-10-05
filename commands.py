@@ -138,6 +138,10 @@ class Commands:
             try:
                 self.__eventInMemoryTime = datetime.strptime(
                     message.content, '%H:%M %d/%m/%y')  # used to check if format is correct
+
+                if self.__eventInMemoryTime < datetime.now():
+                    return 'The event time cannot be in the past. Please enter a future date/time.'
+
                 self.__eventInMemoryTimeStr = self.__eventInMemoryTime.strftime(
                     '%H:%M %d/%m/%y')
                 self.__step = 2
@@ -184,7 +188,7 @@ class Commands:
         text = message.content.split()
         text = ' '.join(text[2::])
 
-        events = self.__funcs.load_json()
+        events = await self.__funcs.load_json()
         try:
             events.pop(text)
             with open("events.json", 'w') as f:
