@@ -143,7 +143,7 @@ class Commands:
 
         if self.__step == 2:
             self.__eventInMemoryName = message.content
-            await self.__funcs.save_event(
+            await self.__funcs.save_event_func(
                 self.__eventInMemoryName, self.__eventInMemoryTimeStr)
             self.__inConvo = False
 

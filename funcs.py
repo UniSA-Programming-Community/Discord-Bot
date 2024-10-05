@@ -77,7 +77,7 @@ class Funcs:
         return unorderedEvents
 
     @staticmethod
-    async def save_event(self, name: str, time: datetime):
+    async def save_event_func(self, name: str, time: datetime):
         unorderedEvents = await self.load_json()
         print(f'this is the result from json load {unorderedEvents}')
         print(f'the file type loaded is {type(unorderedEvents)}')
