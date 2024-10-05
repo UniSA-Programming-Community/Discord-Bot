@@ -1,3 +1,5 @@
+import json
+
 import psutil
 import requests
 from discord import Client, Message, utils
@@ -142,9 +144,18 @@ class Commands:
                 return f'Time was not entered correctly, please enter to the format h:m dd/m/yy. \n {ex}'
 
         if self.__step == 2:
-            self.__eventInMemoryName = message.content
-            await self.__funcs.save_event_func(
-                self.__eventInMemoryName, self.__eventInMemoryTime)
+
+            unorderedEvents = await self.__funcs.load_json()
+            print(f'this is the result from json load {unorderedEvents}')
+            print(f'the file type loaded is {type(unorderedEvents)}')
+
+            unorderedEvents[message.content] = self.__eventInMemoryTimeStr
+            print(f'this the the dict about to be saved to JSON{unorderedEvents}')
+            with open("events.json", 'w') as f:
+                json.dump(unorderedEvents, f)
+
+
+
             self.__inConvo = False
 
             return f'Event has been saved in memory as {self.__eventInMemoryName}.'
