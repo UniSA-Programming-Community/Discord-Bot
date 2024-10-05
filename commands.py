@@ -1,5 +1,7 @@
 import json
 
+from venv import logger
+
 import psutil
 import requests
 from discord import Client, Message, utils
@@ -146,8 +148,8 @@ class Commands:
         if self.__step == 2:
 
             unorderedEvents = await self.__funcs.load_json()
-            print(f'this is the result from json load {unorderedEvents}')
-            print(f'the file type loaded is {type(unorderedEvents)}')
+            logger.info(f'this is the result from json load {unorderedEvents}')
+            logger.info(f'the file type loaded is {type(unorderedEvents)}')
 
             unorderedEvents[message.content] = self.__eventInMemoryTimeStr
             print(f'this the the dict about to be saved to JSON{unorderedEvents}')
