@@ -162,8 +162,8 @@ class Commands:
             return f'Event has been saved in memory as {self.__eventInMemoryName}.'
 
     async def display_events(self):
-        unorderedEvents = self.__funcs.load_json()
-        eventOrder = self.__funcs.sort_events(unorderedEvents)
+        unorderedEvents = await self.__funcs.load_json()
+        eventOrder = await self.__funcs.sort_events(unorderedEvents)
 
         txt = ''
         for item in eventOrder:
