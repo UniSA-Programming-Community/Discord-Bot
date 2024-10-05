@@ -115,7 +115,8 @@ class Commands:
 
     async def set_event(self, message: Message):
         # datetime_object = datetime.strptime(datetime_str, '%H:%M %d/%m/%y')
-        if not await self.__funcs.check_for_role(message.author,  EXEC_ROLE_ID):
+
+        if not await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
             return 'you can not set an event as you are not a exec.'
         if message.content.startswith('!set event'):
             self.__inConvo = True

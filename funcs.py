@@ -8,13 +8,12 @@ class Funcs:
         self.__client = client
 
     # check for specific role
-    async def check_for_role(self, author, roleName):
+    async def check_for_role(self, author, role_id):
         author_roles = author.roles
-        flag = False
         for item in author_roles:
-            if item.name == roleName:
-                flag = True
-        return flag
+            if item.id == role_id:
+                return True
+        return False
 
     # strips all text from userID+
 
