@@ -8,7 +8,8 @@ class Funcs:
         self.__client = client
 
     # check for specific role
-    async def check_for_role(self, author, role_id):
+    @staticmethod
+    async def check_for_role(author, role_id):
         author_roles = author.roles
         for item in author_roles:
             if item.id == role_id:
@@ -17,7 +18,8 @@ class Funcs:
 
     # strips all text from userID+
 
-    async def strip_UID(self, text: str):
+    @staticmethod
+    async def strip_UID(text: str):
         textToRemove = ['!member ', '<@', '>']
         UID = text
 
@@ -26,7 +28,8 @@ class Funcs:
 
         return int(UID)
 
-    async def sort_events(self, unorderedDict):
+    @staticmethod
+    async def sort_events(unorderedDict):
 
         return sorted(unorderedDict, key=lambda item: datetime.strptime(unorderedDict[item], '%H:%M %d/%m/%y'))
 
@@ -59,7 +62,8 @@ class Funcs:
                 print(f'output of sort events {orderedDict}')
                 return orderedDict
 
-    async def load_json(self):
+    @staticmethod
+    async def load_json():
         try:
             with open("events.json", 'r') as f:
                 unorderedEvents = json.load(f)
@@ -72,6 +76,7 @@ class Funcs:
 
         return unorderedEvents
 
+    @staticmethod
     async def save_event(self, name: str, time: datetime):
         unorderedEvents = await self.load_json()
         print(f'this is the result from json load {unorderedEvents}')
