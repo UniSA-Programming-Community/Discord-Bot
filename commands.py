@@ -10,6 +10,7 @@ from funcs import Funcs
 
 class Commands:
     def __init__(self, client: Client, funcs: Funcs):
+        self.__step = None
         self.__start_time = datetime.now()
         self.__client = client
         self.__funcs = funcs
@@ -136,7 +137,7 @@ class Commands:
                 return f'Time was not entered correctly, please enter to the format h:m dd/m/yy. \n {ex}'
         if self.__step == 2:
             self.__eventInMemoryName = message.content
-            await self.__funcs.save_evet(
+            await self.__funcs.save_event(
                 self.__eventInMemoryName, self.__eventInMemoryTimeStr)
             self.__inConvo = False
 

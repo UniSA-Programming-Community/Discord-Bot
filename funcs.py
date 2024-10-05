@@ -59,18 +59,6 @@ class Funcs:
                 print(f'output of sort events {orderedDict}')
                 return orderedDict
 
-    # def save_evet(self, name: str, time: datetime):
-    #     try:
-    #         from events import Events
-    #         orderedEvents = self.sort_events(Events)
-    #     except ImportError:
-    #         orderedEvents = {}
-
-    #     orderedEvents[name] = time
-    #     f = open('discord-bot-UPC-codejam\\events.py', 'w')
-    #     f.write(f'Events = {orderedEvents}')
-    #     f.close()
-
     async def load_json(self):
         try:
             with open("events.json", 'r') as f:
@@ -84,8 +72,8 @@ class Funcs:
 
         return unorderedEvents
 
-    async def save_evet(self, name: str, time: datetime):
-        unorderedEvents = self.load_json()
+    async def save_event(self, name: str, time: datetime):
+        unorderedEvents = await self.load_json()
         print(f'this is the result from json load {unorderedEvents}')
         print(f'the file type loaded is {type(unorderedEvents)}')
 
