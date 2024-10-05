@@ -4,7 +4,7 @@ from discord import Client, Message, utils
 from datetime import datetime, timedelta
 from json import dump
 
-from const import BOT_VERSION
+from const import BOT_VERSION, EXEC_ROLE_ID, INDUSTRY_ROLE_ID, UOA_EXEC_ROLE_ID, MEMBER_ROLE_ID
 from funcs import Funcs
 
 
@@ -63,7 +63,7 @@ class Commands:
     # messages every member - used to remained people of renewal
 
     async def renew(self, message: Message):
-        if not await self.__funcs.check_for_role(message.author, 'exec'):
+        if not await self.__funcs.check_for_role(message.author, role_id=EXEC_ROLE_ID):
             return 'You can not use this command as you are not an executive.'
         if datetime.now().month != 1:
             return 'It is not January, you dont wanna message everyone yet'
@@ -83,7 +83,7 @@ class Commands:
     # messages people who have been in the server for more than a week and don't have member or other relent role to sign up
 
     async def msg_non_members(self, message: Message):
-        if not await self.__funcs.check_for_role(message.author, 'exec'):
+        if not await self.__funcs.check_for_role(message.author, role_id=EXEC_ROLE_ID):
             return 'You can not use this command as you are not an executive.'
         allUsers = self.__client.get_all_members()
 
@@ -92,7 +92,7 @@ class Commands:
             allUsersList.append(user)
 
         nonMembers = []
-        ignoredRoles = ['member', 'Adelaide CSC exec', 'Industry', 'exec']
+        ignoredRoles = [MEMBER_ROLE_ID, UOA_EXEC_ROLE_ID, INDUSTRY_ROLE_ID, EXEC_ROLE_ID]
 
         for user in allUsersList:
             flag = False
@@ -115,7 +115,7 @@ class Commands:
 
     async def set_event(self, message: Message):
         # datetime_object = datetime.strptime(datetime_str, '%H:%M %d/%m/%y')
-        if not await self.__funcs.check_for_role(message.author, 'exec'):
+        if not await self.__funcs.check_for_role(message.author,  role_id=EXEC_ROLE_ID):
             return 'you can not set an event as you are not a exec.'
         if message.content.startswith('!set event'):
             self.__inConvo = True
@@ -152,7 +152,7 @@ class Commands:
         return txt
 
     async def delete_event(self, message: Message):
-        if not self.__funcs.check_for_role(message.author, 'exec'):
+        if not self.__funcs.check_for_role(message.author,  role_id=EXEC_ROLE_ID):
             return 'you can not delete a event as you are not an exec'
         text = message.content.split()
         text = ' '.join(text[2::])
