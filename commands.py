@@ -173,9 +173,9 @@ class Commands:
 
         print_events = []
         for name, time in sorted_events:
-            print_events.append(f'{name} - {time}\n')
+            print_events.append(f'"{name}" - "{time}"')
 
-        return print_events
+        return '\n'.join(print_events)
 
     async def delete_event(self, message: Message):
         if not self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
