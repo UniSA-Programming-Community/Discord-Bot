@@ -7,18 +7,11 @@ from json import dump
 from const import BOT_VERSION, EXEC_ROLE_ID, INDUSTRY_ROLE_ID, UOA_EXEC_ROLE_ID, MEMBER_ROLE_ID
 from funcs import Funcs
 
-from enum import Enum
-
-
-class EventSteps(Enum):
-    WAITING_FOR_TIME = 1
-    WAITING_FOR_NAME = 2
-
 
 class Commands:
     def __init__(self, client: Client, funcs: Funcs):
         self.__eventInMemoryName = None
-        self.__currentStep = None
+        self.__eventInMemoryTimeStr = None
         self.__eventInMemoryTime = None
         self.__step = None
         self.__start_time = datetime.now()
@@ -125,53 +118,38 @@ class Commands:
         return f'{[x.name for x in nonMembers]} have all been direct messaged. - not actually code is commented out'
 
     async def set_event(self, message: Message):
+        # datetime_object = datetime.strptime(datetime_str, '%H:%M %d/%m/%y')
+
         if not await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
-            return 'You cannot set an event as you are not a member of the exec team.'
+            return 'you can not set an event as you are not a exec.'
 
         if message.content.startswith('!set event'):
-            self.start_event_conversation(message.author)
-            return 'Please enter the event date/time in the format (HH:MM DD/MM/YY).'
+            self.__inConvo = True
+            self.__currentUserID = message.author.id
+            self.__step = 1
+            self.__currentFunc = self.set_event
+            return 'enter event date/time (h:m dd/m/yy).'
 
-        if not self.__inConvo or message.author.id != self.__currentUserID:
-            return 'No active event setup. Use "!set event" to start.'
+        if self.__step == 1:
+            try:
+                self.__eventInMemoryTime = datetime.strptime(
+                    message.content, '%H:%M %d/%m/%y')  # used to check if format is correct
+                self.__eventInMemoryTimeStr = self.__eventInMemoryTime.strftime(
+                    '%H:%M %d/%m/%y')
+                self.__step = 2
+                return f'Time is set at {self.__eventInMemoryTime}. Please enter the name of the event.'
+            except Exception as ex:
+                return f'Time was not entered correctly, please enter to the format h:m dd/m/yy. \n {ex}'
 
-        return await self.handle_current_step(message)
+        if self.__step == 2:
+            self.__eventInMemoryName = message.content
+            await self.__funcs.save_event(
+                self.__eventInMemoryName, self.__eventInMemoryTimeStr)
+            self.__inConvo = False
 
-    def start_event_conversation(self, author):
-        self.__inConvo = True
-        self.__currentUserID = author.id
-        self.__currentStep = EventSteps.WAITING_FOR_TIME
-
-    async def handle_current_step(self, message):
-        if self.__currentStep == EventSteps.WAITING_FOR_TIME:
-            return await self.set_event_time(message)
-        elif self.__currentStep == EventSteps.WAITING_FOR_NAME:
-            return await self.set_event_name(message)
-
-    async def set_event_time(self, message):
-        try:
-            self.__eventInMemoryTime = datetime.strptime(message.content, '%H:%M %d/%m/%y')
-            self.__currentStep = EventSteps.WAITING_FOR_NAME
-            return f'Time is set to {self.__eventInMemoryTime}. Now, enter the name of the event.'
-        except ValueError:
-            return 'Invalid time format. Please enter the time in the format (HH:MM DD/MM/YY).'
-
-    async def set_event_name(self, message):
-        self.__eventInMemoryName = message.content
-        await self.__funcs.save_event(self.__eventInMemoryName, self.__eventInMemoryTime.strftime('%H:%M %d/%m/%y'))
-        self.end_event_conversation()
-        return f'Event "{self.__eventInMemoryName}" has been saved for {self.__eventInMemoryTime}.'
-
-    def end_event_conversation(self):
-        self.__inConvo = False
-        self.__currentUserID = None
-        self.__currentStep = None
-        self.__eventInMemoryTime = None
-        self.__eventInMemoryName = None
-
-
-
-
+            return f'Event has been saved in memory as {self.__eventInMemoryName}.'
+    
+    
     async def display_events(self):
         unorderedEvents = self.__funcs.load_json()
         eventOrder = self.__funcs.sort_events(unorderedEvents)
@@ -183,7 +161,7 @@ class Commands:
         return txt
 
     async def delete_event(self, message: Message):
-        if not self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
+        if not self.__funcs.check_for_role(message.author,  EXEC_ROLE_ID):
             return 'you can not delete a event as you are not an exec'
         text = message.content.split()
         text = ' '.join(text[2::])
