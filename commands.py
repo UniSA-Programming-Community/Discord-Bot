@@ -7,9 +7,19 @@ from json import dump
 from const import BOT_VERSION, EXEC_ROLE_ID, INDUSTRY_ROLE_ID, UOA_EXEC_ROLE_ID, MEMBER_ROLE_ID
 from funcs import Funcs
 
+from enum import Enum
+
+
+class EventSteps(Enum):
+    WAITING_FOR_TIME = 1
+    WAITING_FOR_NAME = 2
+
 
 class Commands:
     def __init__(self, client: Client, funcs: Funcs):
+        self.__eventInMemoryName = None
+        self.__currentStep = None
+        self.__eventInMemoryTime = None
         self.__step = None
         self.__start_time = datetime.now()
         self.__client = client
@@ -115,36 +125,52 @@ class Commands:
         return f'{[x.name for x in nonMembers]} have all been direct messaged. - not actually code is commented out'
 
     async def set_event(self, message: Message):
-        # Check if user has the required role
         if not await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
             return 'You cannot set an event as you are not a member of the exec team.'
 
-        if not self.__inConvo:
-            __eventInMemoryTime = None
-            __eventInMemoryTimeStr = None
-            __eventInMemoryName = None
-
         if message.content.startswith('!set event'):
-            self.__inConvo = True
-            self.__currentUserID = message.author.id
-            self.__step = 1
-            self.__currentFunc = self.set_event
+            self.start_event_conversation(message.author)
             return 'Please enter the event date/time in the format (HH:MM DD/MM/YY).'
 
-        if self.__step == 1:
-            try:
-                __eventInMemoryTime = datetime.strptime(message.content, '%H:%M %d/%m/%y')
-                __eventInMemoryTimeStr = __eventInMemoryTime.strftime('%H:%M %d/%m/%y')
-                self.__step = 2
-                return f'Time is set to {__eventInMemoryTime}. Now, enter the name of the event.'
-            except ValueError:
-                return 'Invalid time format. Please enter the time in the format (HH:MM DD/MM/YY).'
+        if not self.__inConvo or message.author.id != self.__currentUserID:
+            return 'No active event setup. Use "!set event" to start.'
 
-        if self.__step == 2:
-            __eventInMemoryName = message.content
-            await self.__funcs.save_event(__eventInMemoryName, __eventInMemoryTimeStr)
-            self.__inConvo = False
-            return f'Event "{__eventInMemoryName}" has been saved for {__eventInMemoryTimeStr}.'
+        return await self.handle_current_step(message)
+
+    def start_event_conversation(self, author):
+        self.__inConvo = True
+        self.__currentUserID = author.id
+        self.__currentStep = EventSteps.WAITING_FOR_TIME
+
+    async def handle_current_step(self, message):
+        if self.__currentStep == EventSteps.WAITING_FOR_TIME:
+            return await self.set_event_time(message)
+        elif self.__currentStep == EventSteps.WAITING_FOR_NAME:
+            return await self.set_event_name(message)
+
+    async def set_event_time(self, message):
+        try:
+            self.__eventInMemoryTime = datetime.strptime(message.content, '%H:%M %d/%m/%y')
+            self.__currentStep = EventSteps.WAITING_FOR_NAME
+            return f'Time is set to {self.__eventInMemoryTime}. Now, enter the name of the event.'
+        except ValueError:
+            return 'Invalid time format. Please enter the time in the format (HH:MM DD/MM/YY).'
+
+    async def set_event_name(self, message):
+        self.__eventInMemoryName = message.content
+        await self.__funcs.save_event(self.__eventInMemoryName, self.__eventInMemoryTime.strftime('%H:%M %d/%m/%y'))
+        self.end_event_conversation()
+        return f'Event "{self.__eventInMemoryName}" has been saved for {self.__eventInMemoryTime}.'
+
+    def end_event_conversation(self):
+        self.__inConvo = False
+        self.__currentUserID = None
+        self.__currentStep = None
+        self.__eventInMemoryTime = None
+        self.__eventInMemoryName = None
+
+
+
 
     async def display_events(self):
         unorderedEvents = self.__funcs.load_json()
