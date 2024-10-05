@@ -162,14 +162,20 @@ class Commands:
             return f'Event has been saved in memory as {self.__eventInMemoryName}.'
 
     async def display_events(self):
-        unorderedEvents = await self.__funcs.load_json()
-        eventOrder = await self.__funcs.sort_events(unorderedEvents)
+        with open('events.json', 'r') as file:
+            unordered_events = json.load(file)
 
-        txt = ''
-        for item in eventOrder:
-            if datetime.strptime(unorderedEvents[item], '%H:%M %d/%m/%y') > datetime.now():
-                txt += f'{item} - {unorderedEvents[item]}\n'
-        return txt
+        sorted_events = sorted(
+            unordered_events.items(),
+            key=lambda item: datetime.strptime(item[1], '%H:%M %d/%m/%y'),
+            reverse=True  # Sort from newest to oldest
+        )
+
+        print_events = []
+        for name, time in sorted_events:
+            print_events.append(f'{name} - {time}\n')
+
+        return print_events
 
     async def delete_event(self, message: Message):
         if not self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
