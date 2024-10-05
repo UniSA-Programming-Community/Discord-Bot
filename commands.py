@@ -115,33 +115,36 @@ class Commands:
         return f'{[x.name for x in nonMembers]} have all been direct messaged. - not actually code is commented out'
 
     async def set_event(self, message: Message):
-        # datetime_object = datetime.strptime(datetime_str, '%H:%M %d/%m/%y')
-
+        # Check if user has the required role
         if not await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
-            return 'you can not set an event as you are not a exec.'
+            return 'You cannot set an event as you are not a member of the exec team.'
+
+        if not self.__inConvo:
+            __eventInMemoryTime = None
+            __eventInMemoryTimeStr = None
+            __eventInMemoryName = None
+
         if message.content.startswith('!set event'):
             self.__inConvo = True
             self.__currentUserID = message.author.id
             self.__step = 1
             self.__currentFunc = self.set_event
-            return 'enter event date/time (h:m dd/m/yy).'
+            return 'Please enter the event date/time in the format (HH:MM DD/MM/YY).'
+
         if self.__step == 1:
             try:
-                self.__eventInMemoryTime = datetime.strptime(
-                    message.content, '%H:%M %d/%m/%y')  # used to check if format is correct
-                self.__eventInMemoryTimeStr = self.__eventInMemoryTime.strftime(
-                    '%H:%M %d/%m/%y')
+                __eventInMemoryTime = datetime.strptime(message.content, '%H:%M %d/%m/%y')
+                __eventInMemoryTimeStr = __eventInMemoryTime.strftime('%H:%M %d/%m/%y')
                 self.__step = 2
-                return f'Time is set at {self.__eventInMemoryTime}. Please enter the name of the event.'
-            except Exception as ex:
-                return f'Time was not entered correctly, please enter to the format h:m dd/m/yy. \n {ex}'
-        if self.__step == 2:
-            self.__eventInMemoryName = message.content
-            await self.__funcs.save_event(
-                self.__eventInMemoryName, self.__eventInMemoryTimeStr)
-            self.__inConvo = False
+                return f'Time is set to {__eventInMemoryTime}. Now, enter the name of the event.'
+            except ValueError:
+                return 'Invalid time format. Please enter the time in the format (HH:MM DD/MM/YY).'
 
-            return f'Event has been saved in memory as {self.__eventInMemoryName}.'
+        if self.__step == 2:
+            __eventInMemoryName = message.content
+            await self.__funcs.save_event(__eventInMemoryName, __eventInMemoryTimeStr)
+            self.__inConvo = False
+            return f'Event "{__eventInMemoryName}" has been saved for {__eventInMemoryTimeStr}.'
 
     async def display_events(self):
         unorderedEvents = self.__funcs.load_json()
@@ -154,7 +157,7 @@ class Commands:
         return txt
 
     async def delete_event(self, message: Message):
-        if not self.__funcs.check_for_role(message.author,  EXEC_ROLE_ID):
+        if not self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
             return 'you can not delete a event as you are not an exec'
         text = message.content.split()
         text = ' '.join(text[2::])
@@ -195,6 +198,7 @@ class Commands:
             f"Latency: {latency}ms\n"
             f"IP Address: {data["ip"]}\n"
             f"Uptime: {uptime_str}\n"
+            f"Previous Start Time: {self.__start_time}\n"
             f"Memory Usage: {memory_usage:.2f} MB\n"
             f"{CPU_response}"
 
