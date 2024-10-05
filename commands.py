@@ -146,23 +146,21 @@ class Commands:
                 return f'Time was not entered correctly, please enter to the format h:m dd/m/yy. \n {ex}'
 
         if self.__step == 2:
+            self.__eventInMemoryName = message.content
 
             unorderedEvents = await self.__funcs.load_json()
             logger.info(f'this is the result from json load {unorderedEvents}')
             logger.info(f'the file type loaded is {type(unorderedEvents)}')
 
-            unorderedEvents[message.content] = self.__eventInMemoryTimeStr
+            unorderedEvents[self.__eventInMemoryName] = self.__eventInMemoryTimeStr
             print(f'this the the dict about to be saved to JSON{unorderedEvents}')
             with open("events.json", 'w') as f:
                 json.dump(unorderedEvents, f)
 
-
-
             self.__inConvo = False
 
             return f'Event has been saved in memory as {self.__eventInMemoryName}.'
-    
-    
+
     async def display_events(self):
         unorderedEvents = self.__funcs.load_json()
         eventOrder = self.__funcs.sort_events(unorderedEvents)
@@ -174,7 +172,7 @@ class Commands:
         return txt
 
     async def delete_event(self, message: Message):
-        if not self.__funcs.check_for_role(message.author,  EXEC_ROLE_ID):
+        if not self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
             return 'you can not delete a event as you are not an exec'
         text = message.content.split()
         text = ' '.join(text[2::])
