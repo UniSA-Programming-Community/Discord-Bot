@@ -172,8 +172,9 @@ class Commands:
         )
 
         print_events = []
+        print_events.append("**Upcoming events**")
         for name, time in sorted_events:
-            print_events.append(f'"{name}" - "{time}"')
+            print_events.append(f'{name} - {time}')
 
         return '\n'.join(print_events)
 
