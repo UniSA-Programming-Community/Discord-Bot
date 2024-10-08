@@ -65,7 +65,7 @@ class Commands:
 
             if not await self.__funcs.check_for_role(target_member, MEMBER_ROLE_ID):
                 await target_member.add_roles(role)
-                return f'Role has been successfully added to {target_member.name}.'
+                return f'Role has been successfully added to <@{UID}>.'
             else:
                 return f'{target_member.name} already has member role.'
         else:
@@ -175,10 +175,10 @@ class Commands:
         sorted_events = sorted(
             unordered_events.items(),
             key=lambda item: datetime.strptime(item[1], '%H:%M %d/%m/%y'),
-            reverse=True  # Sort from newest to oldest
+            reverse=False  
         )
 
-        print_events = ["**Upcoming events** (sorted by latest to upcoming)"]
+        print_events = ["**Upcoming events**"]
         for name, time in sorted_events:
             print_events.append(f'{name} - {time}')
 
