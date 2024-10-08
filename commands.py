@@ -60,6 +60,9 @@ class Commands:
             UID = self.__funcs.strip_UID(str(message.content))
             target_member = utils.get(self.__client.get_all_members(), id=UID)
 
+            if not target_member:
+                return f'Member with UID {UID} not found.'
+
             if not await self.__funcs.check_for_role(target_member, MEMBER_ROLE_ID):
                 await target_member.add_roles(role)
                 return f'Role has been successfully added to {target_member.name}.'
@@ -175,8 +178,7 @@ class Commands:
             reverse=True  # Sort from newest to oldest
         )
 
-        print_events = []
-        print_events.append("**Upcoming events**")
+        print_events = ["**Upcoming events** (sorted by latest to upcoming)"]
         for name, time in sorted_events:
             print_events.append(f'{name} - {time}')
 
