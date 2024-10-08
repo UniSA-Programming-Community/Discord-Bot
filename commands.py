@@ -57,7 +57,7 @@ class Commands:
     async def add_role(self, message: Message, roleName='member'):
         if await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
             role = utils.get(message.guild.roles, name=roleName)
-            UID = self.__funcs.strip_UID(str(message.content))
+            UID = await self.__funcs.strip_UID(str(message.content))
             target_member = utils.get(self.__client.get_all_members(), id=UID)
 
             if not target_member:
