@@ -168,6 +168,17 @@ class Commands:
 
             return f'Event has been saved in memory as {self.__eventInMemoryName}.'
 
+    async def print_asset(self, message: Message) -> str:
+        split_message = message.content.split()
+        if len(split_message) < 2:
+            return "Error: Message should contain both domain and icon."
+
+        domain = split_message[0]
+        icon = split_message[1]
+        asset_url = f"https://unisa-programming-community.netlify.app/{domain}/{icon}.png"
+
+        return asset_url
+
     async def display_events(self):
         with open('events.json', 'r') as file:
             unordered_events = json.load(file)
@@ -175,7 +186,7 @@ class Commands:
         sorted_events = sorted(
             unordered_events.items(),
             key=lambda item: datetime.strptime(item[1], '%H:%M %d/%m/%y'),
-            reverse=False  
+            reverse=False
         )
 
         print_events = ["**Upcoming events**"]

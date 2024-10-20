@@ -46,3 +46,5 @@ class Control:
             return await self.__commands.ping()
         elif message_content.startswith('!debug'):
             return await self.__commands.debug()
+        elif message_content.startswith('!asset'):
+            return await self.__commands.print_asset(message)
