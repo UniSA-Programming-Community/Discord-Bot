@@ -173,8 +173,8 @@ class Commands:
         if len(split_message) < 2:
             return "Error: Message should contain both domain and icon."
 
-        domain = split_message[0]
-        icon = split_message[1]
+        domain = split_message[1]
+        icon = split_message[2]
         asset_url = f"https://unisa-programming-community.netlify.app/{domain}/{icon}.png"
 
         return asset_url
