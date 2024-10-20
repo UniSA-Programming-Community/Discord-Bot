@@ -8,6 +8,8 @@ from discord import Client, Message, utils
 from datetime import datetime, timedelta
 from json import dump
 
+import aiohttp
+
 from const import BOT_VERSION, EXEC_ROLE_ID, INDUSTRY_ROLE_ID, UOA_EXEC_ROLE_ID, MEMBER_ROLE_ID
 from funcs import Funcs
 
@@ -177,7 +179,21 @@ class Commands:
         icon = split_message[2]
         asset_url = f"https://unisa-programming-community.netlify.app/{domain}/{icon}.png"
 
-        return asset_url
+        if await self.is_valid_image(asset_url):
+            return asset_url
+        else:
+            return "Error: The generated URL is not a valid image."
+
+
+    async def is_valid_image(self, url: str) -> bool:
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(url) as response:
+                    if response.status == 200 and 'image' in response.headers['Content-Type']:
+                        return True
+            except aiohttp.ClientError:
+                return False
+        return False
 
     async def display_events(self):
         with open('events.json', 'r') as file:
