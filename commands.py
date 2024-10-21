@@ -160,10 +160,11 @@ class Commands:
             for event_name, event_time in self.__eventInMemorySchema.items():
 
                 start_time = datetime.strptime(event_time, '%H:%M %d/%m/%y').astimezone()  # Make it timezone-aware
-
+                end_time = start_time + timedelta(hours=6)
                 await guild.create_scheduled_event(
                     name=event_name,
                     start_time=start_time,
+                    end_time=end_time,
                     entity_type=discord.EntityType.external,
                     location='Adelaide',
                     description=f"This is the {event_name} event."
