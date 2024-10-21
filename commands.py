@@ -2,6 +2,7 @@ import json
 
 from venv import logger
 
+import discord
 import psutil
 import requests
 from discord import Client, Message, utils
@@ -127,48 +128,49 @@ class Commands:
         return f'{[x.name for x in nonMembers]} have all been direct messaged. - not actually code is commented out'
 
     async def set_event(self, message: Message):
-        # datetime_object = datetime.strptime(datetime_str, '%H:%M %d/%m/%y')
-
         if not await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
-            return 'you can not set an event as you are not a exec.'
+            return 'You cannot set an event as you are not an exec.'
 
         if message.content.startswith('!set event'):
             self.__inConvo = True
             self.__currentUserID = message.author.id
             self.__step = 1
             self.__currentFunc = self.set_event
-            return 'enter event date/time (h:m dd/m/yy).'
+            return 'Enter events in the format {"event1": "h:m dd/m/yy", "event2": "h:m dd/m/yy"}'
 
         if self.__step == 1:
             try:
-                self.__eventInMemoryTime = datetime.strptime(
-                    message.content, '%H:%M %d/%m/%y')  # used to check if format is correct
+                event_schema = json.loads(message.content)
 
-                if self.__eventInMemoryTime < datetime.now():
-                    return 'The event time cannot be in the past. Please enter a future date/time.'
+                for event_name, event_time in event_schema.items():
+                    datetime_object = datetime.strptime(event_time, '%H:%M %d/%m/%y')
 
-                self.__eventInMemoryTimeStr = self.__eventInMemoryTime.strftime(
-                    '%H:%M %d/%m/%y')
+                    if datetime_object < datetime.now():
+                        return f'The event time for {event_name} cannot be in the past.'
+
+                self.__eventInMemorySchema = event_schema
                 self.__step = 2
-                return f'Time is set at {self.__eventInMemoryTime}. Please enter the name of the event.'
+                return f"Events have been registered: {', '.join(event_schema.keys())}. Confirm to save."
             except Exception as ex:
-                return f'Time was not entered correctly, please enter to the format h:m dd/m/yy. \n {ex}'
+                return f'There was an error parsing the event schema. Please enter the correct format: {"event1": "h:m dd/m/yy", "event2": "h:m dd/m/yy"}.\n{ex}'
 
         if self.__step == 2:
-            self.__eventInMemoryName = message.content
+            guild = message.guild
 
-            unorderedEvents = await self.__funcs.load_json()
-            logger.info(f'this is the result from json load {unorderedEvents}')
-            logger.info(f'the file type loaded is {type(unorderedEvents)}')
+            for event_name, event_time in self.__eventInMemorySchema.items():
+                start_time = datetime.strptime(event_time, '%H:%M %d/%m/%y')
 
-            unorderedEvents[self.__eventInMemoryName] = self.__eventInMemoryTimeStr
-            print(f'this the the dict about to be saved to JSON{unorderedEvents}')
-            with open("events.json", 'w') as f:
-                json.dump(unorderedEvents, f)
+                await guild.create_scheduled_event(
+                    name=event_name,
+                    start_time=start_time,
+                    entity_type=discord.EntityType.external,
+                    location='Adelaide',
+                    description=f"This is the {event_name} event."
+                )
 
             self.__inConvo = False
 
-            return f'Event has been saved in memory as {self.__eventInMemoryName}.'
+            return f'Discord events have been created for: {", ".join(self.__eventInMemorySchema.keys())}.'
 
     async def print_asset(self, message: Message) -> str:
         split_message = message.content.split()
