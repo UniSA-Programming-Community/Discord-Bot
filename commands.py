@@ -167,7 +167,8 @@ class Commands:
                     end_time=end_time,
                     entity_type=discord.EntityType.external,
                     location='Adelaide',
-                    description=f"This is the {event_name} event."
+                    description=f"This is the {event_name} event.",
+                    privacy_level=discord.PrivacyLevel.guild_only
                 )
 
             self.__inConvo = False
