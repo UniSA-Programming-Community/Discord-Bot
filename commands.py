@@ -158,7 +158,8 @@ class Commands:
             guild = message.guild
 
             for event_name, event_time in self.__eventInMemorySchema.items():
-                start_time = datetime.strptime(event_time, '%H:%M %d/%m/%y')
+
+                start_time = datetime.strptime(event_time, '%H:%M %d/%m/%y').astimezone()  # Make it timezone-aware
 
                 await guild.create_scheduled_event(
                     name=event_name,
