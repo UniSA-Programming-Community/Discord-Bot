@@ -127,6 +127,26 @@ class Commands:
 
         return f'{[x.name for x in nonMembers]} have all been direct messaged. - not actually code is commented out'
 
+    async def print_requirements(self, message: Message):
+        if not await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
+            return 'You do not have the required permissions to use this command.'
+        try:
+            with open('requirements.txt', 'r') as f:
+                requirements = f.read()
+
+            if len(requirements) > 2000:
+                parts = [requirements[i:i + 2000] for i in range(0, len(requirements), 2000)]
+                for part in parts:
+                    await message.channel.send(f"```{part}```")
+            else:
+                await message.channel.send(f"```{requirements}```")
+        except FileNotFoundError:
+            return "The requirements.txt file could not be found."
+        except Exception as e:
+            return f"An error occurred: {e}"
+
+        return "Requirements have been printed."
+
     async def set_event(self, message: Message):
         if not await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
             return 'You cannot set an event as you are not an exec.'

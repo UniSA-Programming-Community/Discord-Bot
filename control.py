@@ -48,3 +48,5 @@ class Control:
             return await self.__commands.debug()
         elif message_content.startswith('!asset'):
             return await self.__commands.print_asset(message)
+        elif message_content.startswith('!requirements'):
+            return await self.__commands.print_requirements(message)
