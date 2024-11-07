@@ -98,7 +98,7 @@ class Commands:
     # messages people who have been in the server for more than a week and don't have member or other relent role to sign up
 
     async def msg_non_members(self, message: Message):
-        if not await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
+        if await self.__funcs.check_for_role(message.author, 'exec') == False:
             return 'You can not use this command as you are not an executive.'
         allUsers = self.__client.get_all_members()
 
@@ -107,16 +107,15 @@ class Commands:
             allUsersList.append(user)
 
         nonMembers = []
-        ignoredRoles = [MEMBER_ROLE_ID, UOA_EXEC_ROLE_ID,
-                        INDUSTRY_ROLE_ID, EXEC_ROLE_ID]
+        ignoredRoles = ['member', 'UoA exec', 'Industry', 'exec']
 
         for user in allUsersList:
             flag = False
             for item in ignoredRoles:
-                if await self.__funcs.check_for_role(user, item):
+                if await self.__funcs.check_for_role(user, item) == True:
                     flag = True
-            if not flag:
-                if (datetime.now() - (user.joined_at.replace(tzinfo=None))).days >= 7:
+            if flag == False:
+                if (datetime.now() - (user.joined_at.replace(tzinfo=None))).days >= 0:
                     nonMembers.append(user)
 
         for user in nonMembers:
@@ -132,7 +131,7 @@ class Commands:
 
                         Thanks.""")
                 except discord.errors.HTTPException:
-                    print(f'{user.name} could not be messaged')
+                    message.channel.send(f'{user.name} could not be messaged')
 
         return f'{[x.name for x in nonMembers]} have all been direct messaged.'
 
