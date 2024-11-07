@@ -5,7 +5,7 @@ from venv import logger
 import discord
 import psutil
 import requests
-from discord import Client, Message, utils
+from discord import Client, Message, utils, Member
 from datetime import datetime, timedelta
 from json import dump
 
@@ -44,7 +44,8 @@ class Commands:
 
         }
         otherFuncions = [
-            f'When a user leaves a message is sent in <#{activity_log_channel_id}> containing the users name and current member count.\n',
+            f'When a user leaves a message is sent in <#{
+                activity_log_channel_id}> containing the users name and current member count.\n',
             'Automatically does not past events\n']
 
         txt = 'Commands:\n'
@@ -106,7 +107,8 @@ class Commands:
             allUsersList.append(user)
 
         nonMembers = []
-        ignoredRoles = [MEMBER_ROLE_ID, UOA_EXEC_ROLE_ID, INDUSTRY_ROLE_ID, EXEC_ROLE_ID]
+        ignoredRoles = [MEMBER_ROLE_ID, UOA_EXEC_ROLE_ID,
+                        INDUSTRY_ROLE_ID, EXEC_ROLE_ID]
 
         for user in allUsersList:
             flag = False
@@ -117,15 +119,22 @@ class Commands:
                 if (datetime.now() - (user.joined_at.replace(tzinfo=None))).days >= 7:
                     nonMembers.append(user)
 
-        # for user in nonMembers:
-        #     if isinstance(user, Member):
-        #         try:
-        #             channel = await user.create_dm()
-        #             await channel.send('Hi,\nYou have been in the UniSA Open Source Community discord for more then a week, and still have not signed up.\nIt only takes a minute to sign up, is free and you don't need to be a UniSA student to do it. Signing up is the best way to support our club and allow us to host as many future events as possible.\nhttps://usasa.sa.edu.au/clubs/join/7520/')
-        #         except discord.errors.HTTPException:
-        #             print(f"{user.name} could not be messaged")
+        for user in nonMembers:
+            if isinstance(user, Member):
+                try:
+                    channel = await user.create_dm()
+                    await channel.send("""Hello,
+                        can you please sign up to UPC officially through USASA?
+                        It only takes a minute, is completely free and non-unisa students can still join through it. Just having people join through USASA supports the club greatly.
 
-        return f'{[x.name for x in nonMembers]} have all been direct messaged. - not actually code is commented out'
+                        We will be removing all members from the discord that are not a member on USASA in a few days.
+                        https://usasa.sa.edu.au/clubs/join/upc/
+
+                        Thanks.""")
+                except discord.errors.HTTPException:
+                    print(f'{user.name} could not be messaged')
+
+        return f'{[x.name for x in nonMembers]} have all been direct messaged.'
 
     async def print_requirements(self, message: Message):
         if not await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID):
@@ -135,7 +144,8 @@ class Commands:
                 requirements = f.read()
 
             if len(requirements) > 2000:
-                parts = [requirements[i:i + 2000] for i in range(0, len(requirements), 2000)]
+                parts = [requirements[i:i + 2000]
+                         for i in range(0, len(requirements), 2000)]
                 for part in parts:
                     await message.channel.send(f"```{part}```")
             else:
@@ -163,7 +173,8 @@ class Commands:
                 event_schema = json.loads(message.content)
 
                 for event_name, event_time in event_schema.items():
-                    datetime_object = datetime.strptime(event_time, '%H:%M %d/%m/%y')
+                    datetime_object = datetime.strptime(
+                        event_time, '%H:%M %d/%m/%y')
 
                     if datetime_object < datetime.now():
                         return f'The event time for {event_name} cannot be in the past.'
@@ -179,7 +190,9 @@ class Commands:
 
             for event_name, event_time in self.__eventInMemorySchema.items():
 
-                start_time = datetime.strptime(event_time, '%H:%M %d/%m/%y').astimezone()  # Make it timezone-aware
+                start_time = datetime.strptime(
+                    # Make it timezone-aware
+                    event_time, '%H:%M %d/%m/%y').astimezone()
                 end_time = start_time + timedelta(hours=6)
                 await guild.create_scheduled_event(
                     name=event_name,
@@ -202,13 +215,13 @@ class Commands:
 
         domain = split_message[1]
         icon = split_message[2]
-        asset_url = f"https://unisa-programming-community.netlify.app/{domain}/{icon}.png"
+        asset_url = f"https://unisa-programming-community.netlify.app/{
+            domain}/{icon}.png"
 
         if await self.is_valid_image(asset_url):
             return asset_url
         else:
             return "Error: The generated URL is not a valid image."
-
 
     async def is_valid_image(self, url: str) -> bool:
         async with aiohttp.ClientSession() as session:
