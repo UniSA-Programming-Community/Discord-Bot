@@ -98,7 +98,7 @@ class Commands:
     # messages people who have been in the server for more than a week and don't have member or other relent role to sign up
 
     async def msg_non_members(self, message: Message):
-        if await self.__funcs.check_for_role(message.author, 'exec') == False:
+        if await self.__funcs.check_for_role(message.author, EXEC_ROLE_ID) == False:
             return 'You can not use this command as you are not an executive.'
         allUsers = self.__client.get_all_members()
 
@@ -107,7 +107,8 @@ class Commands:
             allUsersList.append(user)
 
         nonMembers = []
-        ignoredRoles = ['member', 'UoA exec', 'Industry', 'exec']
+        ignoredRoles = [MEMBER_ROLE_ID, UOA_EXEC_ROLE_ID,
+                        INDUSTRY_ROLE_ID, EXEC_ROLE_ID]
 
         for user in allUsersList:
             flag = False
