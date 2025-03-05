@@ -1,4 +1,4 @@
-discord.py==2.5.1
+discord.py==2.5.2
 psutil==7.0.0
 requests==2.32.3
 discord==2.3.2
